@@ -11,6 +11,8 @@ import {
 } from '@mui/material'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const Register = () => {
   const [username, setUsername] = useState('')
@@ -20,22 +22,37 @@ const Register = () => {
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
   const navigate = useNavigate()
+const [toast, setToast] = useState({
+  open: false,
+  message: "",
+  severity: "success",
+});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
 
-    const result = await register(username, email, password)
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    if (result.success) {
-      navigate('/')
-    } else {
-      setError(result.message)
-    }
+  const result = await register(username, email, password);
 
-    setLoading(false)
+  if (result.success) {
+    setToast({
+      open: true,
+      message: "Account created successfully ",
+      severity: "success",
+    });
+
+    setTimeout(() => navigate("/"), 1000);
+  } else {
+    setToast({
+      open: true,
+      message: result.message || "Registration failed",
+      severity: "error",
+    });
   }
+
+  setLoading(false);
+};
 
   return (
     <Box
@@ -47,6 +64,22 @@ const Register = () => {
         py: 4,
       }}
     >
+      <Snackbar
+  open={toast.open}
+  autoHideDuration={3000}
+  onClose={() => setToast({ ...toast, open: false })}
+  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  <MuiAlert
+    elevation={6}
+    variant="filled"
+    severity={toast.severity}
+    onClose={() => setToast({ ...toast, open: false })}
+  >
+    {toast.message}
+  </MuiAlert>
+</Snackbar>
+
       <Container maxWidth="sm">
         <Paper
           elevation={24}
@@ -77,19 +110,6 @@ const Register = () => {
             </Typography>
           </Box>
 
-          {error && (
-            <Alert
-              severity="error"
-              sx={{
-                mb: 3,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                backgroundColor: '#1f1f1f',
-              }}
-            >
-              {error}
-            </Alert>
-          )}
 
           <Box component="form" onSubmit={handleSubmit}>
             <TextField

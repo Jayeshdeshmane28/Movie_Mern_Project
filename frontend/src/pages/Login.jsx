@@ -11,6 +11,9 @@ import {
 } from '@mui/material'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -20,26 +23,55 @@ const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
 
+const [toast, setToast] = useState({
+  open: false,
+  message: "",
+  severity: "success",
+  key: 0,
+});
 
-  const handleSubmit = async (e) => {
+const handleToastClose = (event, reason) => {
+  if (reason === "clickaway") return;
+  setToast((prev) => ({ ...prev, open: false }));
+};
+
+
+const handleSubmit = async (e) => {
   e.preventDefault();
-  setError('');
   setLoading(true);
 
-  const result = await login(email, password);
-  console.log("results", result)
-  if (result.success) {
+  try {
+    const result = await login(email, password);
 
-    // 🔥 Save token here
-    // localStorage.setItem("token", result.token);
-    
-    navigate('/');
-  } else {
-    setError(result.message);
+    if (result?.success) {
+      setToast({
+        open: true,
+        message: "Login successful ",
+        severity: "success",
+        key: new Date().getTime(),
+      });
+
+      setTimeout(() => navigate("/"), 800);
+    } else {
+      setToast({
+        open: true,
+        message: result?.message || "Invalid email or password",
+        severity: "error",
+        key: new Date().getTime(),
+      });
+    }
+  } catch (error) {
+    setToast({
+      open: true,
+      message: "Something went wrong. Please try again.",
+      severity: "error",
+      key: new Date().getTime(),
+    });
+  } finally {
+    setLoading(false);
   }
-
-  setLoading(false);
 };
+
 
   return (
     <Box
@@ -51,6 +83,25 @@ const Login = () => {
         py: 4,
       }}
     >
+
+<Snackbar
+  key={toast.key}
+  open={toast.open}
+  autoHideDuration={3000}
+  onClose={handleToastClose}
+  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+>
+  <MuiAlert
+    elevation={6}
+    variant="filled"
+    severity={toast.severity}
+    onClose={handleToastClose}
+  >
+    {toast.message}
+  </MuiAlert>
+</Snackbar>
+
+
       <Container maxWidth="sm">
         <Paper
           elevation={24}
@@ -80,20 +131,6 @@ const Login = () => {
               Sign in to your account to continue
             </Typography>
           </Box>
-
-          {error && (
-            <Alert
-              severity="error"
-              sx={{
-                mb: 3,
-                borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                backgroundColor: '#1f1f1f',
-              }}
-            >
-              {error}
-            </Alert>
-          )}
 
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
