@@ -13,7 +13,7 @@ import {
 import { useParams, useNavigate } from 'react-router-dom'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import IconButton from '@mui/material/IconButton'
-import axios from 'axios'
+import api from '../config/api'
 
 const MovieDetails = () => {
   const { id } = useParams()
@@ -29,7 +29,7 @@ const MovieDetails = () => {
   const fetchMovieDetails = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`/api/movies/${id}`)
+      const response = await api.get(`/api/movies/${id}`)
       setMovie(response.data.movie)
     } catch (err) {
       setError('Failed to fetch movie details')

@@ -24,7 +24,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../config/api'
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -57,7 +57,7 @@ const AdminMovies = () => {
   const fetchMovies = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/movies', { params: { limit: 1000 } })
+      const response = await api.get('/api/movies', { params: { limit: 1000 } })
       setMovies(response.data.movies)
     } catch (err) {
       setError('Failed to fetch movies')
@@ -82,11 +82,7 @@ const AdminMovies = () => {
 //   }
 const handleDelete = async () => {
   try {
-    await axios.delete(`/api/movies/${deleteDialog.movieId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    await api.delete(`/api/movies/${deleteDialog.movieId}`);
 
     setDeleteDialog({ open: false, movieId: null, movieTitle: "" });
 

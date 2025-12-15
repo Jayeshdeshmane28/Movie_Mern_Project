@@ -11,7 +11,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import api from '../config/api'
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -46,7 +46,7 @@ const [snackbar, setSnackbar] = useState({
   const fetchMovie = async () => {
     try {
       setFetching(true)
-      const response = await axios.get(`/api/movies/${id}`)
+      const response = await api.get(`/api/movies/${id}`)
       const movie = response.data.movie
       setFormData({
         title: movie.title || '',
@@ -117,11 +117,7 @@ try {
     cast: formData.cast ? formData.cast.split(",").map(c => c.trim()) : [],
   };
 
-  await axios.put(`/api/movies/${id}`, movieData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  await api.put(`/api/movies/${id}`, movieData);
 
   setSnackbar({
     open: true,

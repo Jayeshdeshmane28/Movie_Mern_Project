@@ -17,7 +17,7 @@ import {
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
 import StarIcon from '@mui/icons-material/Star'
-import axios from 'axios'
+import api from '../config/api'
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,7 +46,7 @@ const Search = () => {
       setLoading(true)
       setError('')
 
-      const response = await axios.get('/api/movies/search', {
+      const response = await api.get('/api/movies/search', {
         params: {
           q: searchQuery,
           page,

@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../config/api'
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -88,11 +88,7 @@ try {
     cast: formData.cast ? formData.cast.split(",").map(c => c.trim()) : [],
   };
 
-  const response = await axios.post("/api/movies", movieData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await api.post("/api/movies", movieData);
 
   setSnackbar({
     open: true,

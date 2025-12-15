@@ -17,7 +17,7 @@ import {
   Chip,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../config/api'
 import StarIcon from '@mui/icons-material/Star'
 
 const Home = () => {
@@ -60,7 +60,7 @@ const Home = () => {
       // }
   const endpoint = sortBy ? '/api/movies/sorted' : '/api/movies';
 
-const response = await axios.get(endpoint, {
+const response = await api.get(endpoint, {
   params: {
     sortBy,
     order,

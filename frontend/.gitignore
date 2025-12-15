@@ -22,6 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-
+README_DEPLOYMENT.md
+ENV_SETUP.md
+DEPLOYMENT.md
 
